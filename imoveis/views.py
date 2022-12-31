@@ -9,3 +9,7 @@ class SimuladorView(View):
     def get(self, request):
         form = SimulacaoFormulario()
         return render(request, template_name="imoveis/pagina_simulador.html", context={"form": form})
+
+
+class ResultadoSimulacaoView(View):
+    pass
