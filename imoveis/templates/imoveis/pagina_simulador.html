@@ -16,31 +16,34 @@
                     <h1 class="h3 mb-3 fw-normal">Simulação de Financiamento de Imóvel</h1>
                 
                     <div class="form-floating">
-                    <input type="date" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Data de nascimento</label>
+                    <input type="date" class="form-control" id="data_nascimento" name= "data_nascimento">
+                    <label for="data_nascimento">Data de nascimento</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Valor do contrato</label>
+                        <input type="text" class="form-control" id="valor_do_imovel" name="valor_do_imovel">
+                        <label for="valor_do_imovel">Valor do contrato</label>
                     </div>
                     <div class="form-floating">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Valor da entrada</label>
+                        <input type="text" class="form-control" id="valor_da_entrada" name="valor_da_entrada">
+                        <label for="valor_da_entrada">Valor da entrada</label>
                     </div>
-
                     <div class="form-floating">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">prazo</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            <option value="1">120</option>
+                            <option value="2">180</option>
+                            <option value="3">240</option>
+                            <option value="3">360</option>
+                          </select>
+                        <label for="valor_da_entrada">Prazo de pagamento</label>
                     </div>
-                    <div class="form-floating form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                        <label class="form-check-label" for="inlineRadio1">Sim</label>
-                      </div>
-                      <div class="form-floating form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                        <label class="form-check-label" for="inlineRadio2">Não</label>
-                      </div>
-                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                    <div class="form-check text-start mt-2 mb-2">
+                        <input class="form-check-input" type="checkbox" name="incluir_ITBI" value="true" id="itbi">
+                        <label class="form-check-label" for="itbi">
+                          Incluir ITBI
+                        </label>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Simular</button>
                     <p class="mt-5 mb-3 text-muted">© 2017–2022</p>
                 </form>
             </div>
