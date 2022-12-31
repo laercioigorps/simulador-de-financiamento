@@ -1,6 +1,7 @@
 from django.test import TestCase, RequestFactory, Client
 from ..views import SimuladorView
 from django.urls import reverse
+from ..forms import SimulacaoFormulario
 
 class SimuladorDeImoveisViewTest(TestCase):
 
@@ -13,3 +14,5 @@ class SimuladorDeImoveisViewTest(TestCase):
         response = self.client.get(reverse("imoveis:simulador"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "imoveis/pagina_simulador.html")
+        self.assertTrue("form" in response.context)
+        self.assertTrue(isinstance(response.context["form"], SimulacaoFormulario))
