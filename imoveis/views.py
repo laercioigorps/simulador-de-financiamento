@@ -16,7 +16,8 @@ class ResultadoSimulacaoView(View):
     def get(self, request):
         form = SimulacaoFormulario(request.GET)
         if form.is_valid():
-            pass
+            dados_iniciais = form.cleaned_data
+            return render(request, template_name="imoveis/resultado_simulacao.html", context={"dados_iniciais":dados_iniciais})
         else:
             dados_iniciais = form.cleaned_data
             return render(request, template_name="imoveis/pagina_simulador.html", context={"form": form, "dados_iniciais":dados_iniciais}, status=400)
