@@ -11,30 +11,42 @@
     <div class="container text-center">
         <div class="row justify-content-md-center">
             <div class="col-md-5">
-                <form data-bitwarden-watching="1">
+                <form data-bitwarden-watching="1" action="{% url 'imoveis:resultado-simulacao'%}">
                     <img class="mb-4" src="" alt="" width="72" height="57">
                     <h1 class="h3 mb-3 fw-normal">Simulação de Financiamento de Imóvel</h1>
-                
                     <div class="form-floating">
-                    <input type="date" class="form-control" id="data_nascimento" name= "data_nascimento">
-                    <label for="data_nascimento">Data de nascimento</label>
+                        <input type="date" class="form-control" id="data_nascimento" name= "data_nascimento" value="{{dados_iniciais.data_nascimento|date:'Y-m-d'}}">
+                        {% for error in form.data_nascimento.errors%}
+                            <p class="text-start text-danger">{{error}}</p>
+                        {% endfor %}
+                        <label for="data_nascimento">Data de nascimento</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="valor_do_imovel" name="valor_do_imovel">
+                        <input type="text" class="form-control" id="valor_do_imovel" name="valor_do_imovel" value="{{dados_iniciais.valor_do_imovel}}">
+                        {% for error in form.valor_do_imovel.errors%}
+                            <p class="text-start text-danger">{{error}}</p>
+                        {% endfor %}
                         <label for="valor_do_imovel">Valor do contrato</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="valor_da_entrada" name="valor_da_entrada">
+                        <input type="text" class="form-control" id="valor_da_entrada" name="valor_da_entrada" value="{{dados_iniciais.valor_da_entrada}}">
+                        {% for error in form.valor_da_entrada.errors%}
+                        <p class="text-start text-danger">{{error}}</p>
+                        {% endfor %}
                         <label for="valor_da_entrada">Valor da entrada</label>
+                        
                     </div>
                     <div class="form-floating">
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Open this select menu</option>
-                            <option value="1">120</option>
-                            <option value="2">180</option>
-                            <option value="3">240</option>
-                            <option value="3">360</option>
-                          </select>
+                        <select class="form-select" aria-label="Default select example" name="prestacoes">
+                            <option {% if not dados_iniciais.prestacoes %}selected{% endif %}>Selecione o Prazo</option>
+                            <option {% if dados_iniciais.prestacoes == "120" %}selected{% endif %} value="120">120</option>
+                            <option {% if dados_iniciais.prestacoes == "180" %}selected{% endif %} value="180">180</option>
+                            <option {% if dados_iniciais.prestacoes == "240" %}selected{% endif %} value="240">240</option>
+                            <option {% if dados_iniciais.prestacoes == "360" %}selected{% endif %} value="360">360</option>
+                        </select>
+                        {% for error in form.prestacoes.errors%}
+                            <p class="text-start text-danger">{{error}}</p>
+                        {% endfor %}
                         <label for="valor_da_entrada">Prazo de pagamento</label>
                     </div>
                     <div class="form-check text-start mt-2 mb-2">
