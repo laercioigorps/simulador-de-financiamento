@@ -17,9 +17,15 @@ class SimulacaoFormulario(forms.Form):
         if v_entrada and v_imovel and (v_entrada < (v_imovel * 20 /100)):
             self.add_error('valor_da_entrada', "Entrada não pode ser menor que 20% do valor do imovel")
 
+        return cleaned_data
+        
+
     def clean_data_nascimento(self):
-        data_nascimento = self.cleaned_data['data_nascimento']
+        data_nascimento = self.cleaned_data.get('data_nascimento')
         hoje = datetime.date.today()
-        mesno_dia_18_anos_atras = datetime.date(day=hoje.day, month=hoje.month, year=hoje.year-18)
-        if(data_nascimento > mesno_dia_18_anos_atras):
+        mesmo_dia_18_anos_atras = datetime.date(day=hoje.day, month=hoje.month, year=hoje.year-18)
+        if(data_nascimento > mesmo_dia_18_anos_atras):
             raise ValidationError("É necessario ser maior de idade para realizar financiamento!")
+
+        return data_nascimento
+        

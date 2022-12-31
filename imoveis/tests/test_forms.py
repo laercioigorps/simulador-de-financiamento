@@ -81,15 +81,23 @@ class FormDeSimulacaoTest(TestCase):
         form = SimulacaoFormulario(data)
         self.assertFalse(form.is_valid())
 
-    def test_data_de_nascimento_mais_de_18_anos(self):
+    def test_data_de_nascimento_menor_de_18_anos_erro(self):
         # date de 17 anos atrás
         date = datetime.date.today() - datetime.timedelta(weeks=4*12*17)
         data = self.validSimulationData
-        data["data_nascimento"] = date.strftime("%d/%m/%Y")
+        data["data_nascimento"] = date.strftime("%Y-%m-%d")
         form = SimulacaoFormulario(data)
         self.assertFalse(form.is_valid())
-        
         self.assertEqual(form.errors["data_nascimento"][0], "É necessario ser maior de idade para realizar financiamento!")
+
+    def test_data_de_nascimento_maior_de_18_anos_valida(self):
+        # date de 19 anos atrás
+        mesmo_dia_19_anos_atras = date = datetime.date.today() - datetime.timedelta(days= 365*19)
+        data = self.validSimulationData
+        data["data_nascimento"] = mesmo_dia_19_anos_atras.strftime("%Y-%m-%d")
+        form = SimulacaoFormulario(data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data["data_nascimento"], mesmo_dia_19_anos_atras)
 
     def test_form_sem_data_de_nascimento(self):
         del self.validSimulationData["data_nascimento"]
