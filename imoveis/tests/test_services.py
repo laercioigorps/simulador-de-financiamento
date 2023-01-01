@@ -51,7 +51,6 @@ class SimuladorDeFinanciamentoTest(TestCase):
             prestacoes = 240,
             incluir_ITBI=False,
         )
-        simulador.atualizar_indices()
         simulador.calcular_tac()
         self.assertEqual(simulador.valor_tac, Decimal("4800"))
 
@@ -62,7 +61,6 @@ class SimuladorDeFinanciamentoTest(TestCase):
             prestacoes = 240,
             incluir_ITBI=True,
         )
-        simulador.atualizar_indices()
         simulador.calcular_ITBI()
         self.assertEqual(simulador.valor_ITBI, Decimal("7800"))
 

@@ -14,6 +14,7 @@ class SimuladorDeFinanciamento:
         self.prestacoes = prestacoes
         self.incluir_ITBI = incluir_ITBI
         self.valor_ITBI = 0
+        self.atualizar_indices()
     
     def set_juros_mes(self, juros):
         self.juros_mes = Decimal(juros).quantize(Decimal('.01'))
@@ -39,7 +40,6 @@ class SimuladorDeFinanciamento:
         self.valor_ITBI = self.valor_do_imovel * self.indice_itbi/100
 
     def calcular_emprestimo_total(self):
-        self.atualizar_indices()
         if(self.incluir_ITBI):
             self.calcular_ITBI()
         self.calcular_tac()
