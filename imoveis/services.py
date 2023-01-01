@@ -1,4 +1,5 @@
 from decimal import *
+import datetime
 
 class SimuladorDeFinanciamento:
 
@@ -14,6 +15,7 @@ class SimuladorDeFinanciamento:
         self.prestacoes = prestacoes
         self.incluir_ITBI = incluir_ITBI
         self.valor_ITBI = 0
+        self.data = datetime.date.today()
         self.atualizar_indices()
     
     def set_juros_mes(self, juros):

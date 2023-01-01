@@ -1,6 +1,7 @@
 from django.test import TestCase
 from ..services import SimuladorDeFinanciamento
 from decimal import *
+import datetime
 
 class SimuladorDeFinanciamentoTest(TestCase):
 
@@ -85,5 +86,15 @@ class SimuladorDeFinanciamentoTest(TestCase):
         )
         simulador.calcular_emprestimo_total()
         self.assertEqual(simulador.valor_total, Decimal("132912.00"))
+
+    
+    def test_data_de_simulacao_hoje(self):
+        simulador = SimuladorDeFinanciamento(
+            valor_do_imovel=Decimal("150000"),
+            valor_da_entrada=Decimal("30000"),
+            prestacoes = 240,
+            incluir_ITBI=True,
+        )
+        self.assertEqual(simulador.data, datetime.date.today())
 
 
