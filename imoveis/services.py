@@ -50,45 +50,66 @@ class SimuladorDeFinanciamento:
         self.calcular_tac()
         self.valor_total = (self.valor_do_imovel - self.valor_da_entrada) + self.valor_tac + self.valor_ITBI
 
-    def gerar_tabela_price(self):
+    def get_tabela_inicial_com_datas(self):
         rng = pd.date_range(self.data, periods=self.prestacoes + 1, freq='MS')
         rng.name = "Data_Pagamento"
         df = pd.DataFrame(index=rng,columns=[], dtype='float')
         df.reset_index(inplace=True)
         df.index += 0
         df.index.name = "Periodo"
-        #calculo do valor da parcela no sistema de amortização price
+        return df
+
+    def set_valor_parcela_price(self, df):
         df["Parcela"] = npf.pmt(self.juros_mes/100, self.prestacoes, self.valor_total)
         df.at[0,'Parcela'] = 0
-        
-        #calcolo do valor da amortização
+        return df
+
+    def set_valor_amortizacao_price(self, df):
         df["Amortizacao"] = npf.ppmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
-        
         df.at[0,'Amortizacao'] = 0
-        #calculo do valor do juros
+        return df
+
+    def set_valor_juros(self, df):
         df["Juros"] = npf.ipmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
         df.at[0,'Juros'] = 0
-        
-        #calculo do valor total pago
+        return df
+
+    def set_total_pago(self, df):
         df["Total_Pago"] = (df["Amortizacao"]).cumsum()
+        return df
 
-        #calculo de saldo devedor
+    def set_saldo_devedor(self, df):
         df["Saldo_Devedor"] = self.valor_total + df["Total_Pago"]
+        return df
 
-        #calculo seguro cliente
+    def set_seguro_cliente(self, df):
         df["Seguro_Cliente"] = df["Saldo_Devedor"] * self.indice_seguro_cliente/100
         df.at[0,'Seguro_Cliente'] = 0
+        return df
 
-        #calculo segudo do imovel
+    def set_seguro_imovel(self, df):
         df["Seguro_Imovel"] = self.valor_do_imovel * self.indice_seguro_imovel/100
         df.at[0,'Seguro_Imovel'] = 0
+        return df
 
-
-        #definição de tarifas
+    def set_tarifas(self, df):
         df["Tarifa"] = self.tarifa
         df.at[0,'Tarifa'] = 0
 
-  
+    def set_valor_total_prestacao(self, df):
+        df["Prestacao"] = df["Parcela"] + df["Seguro_Cliente"] + df["Seguro_Imovel"] + df["Tarifa"]
+        return df
+
+    def gerar_tabela_price(self):
+        df = self.get_tabela_inicial_com_datas()
+        self.set_valor_parcela_price(df)
+        self.set_valor_amortizacao_price(df)
+        self.set_valor_juros(df)
+        self.set_total_pago(df)
+        self.set_saldo_devedor(df)
+        self.set_seguro_cliente(df)
+        self.set_seguro_imovel(df)
+        self.set_tarifas(df)
         # arredondar valores
         df['Parcela'] = df['Parcela'].astype(float).round(2)
         df['Amortizacao'] = df['Amortizacao'].astype(float).round(2)
@@ -109,6 +130,6 @@ class SimuladorDeFinanciamento:
         df["Total_Pago"] = df["Total_Pago"].abs()
 
         #calculo total das prestações
-        df["Prestacao"] = df["Parcela"] + df["Seguro_Cliente"] + df["Seguro_Imovel"] + df["Tarifa"]
+        self.set_valor_total_prestacao(df)
 
         return df
