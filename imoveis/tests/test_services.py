@@ -213,6 +213,10 @@ class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
         self.assertEqual(df["Prestacao"][1], 1555.8)
         self.assertEqual(df["Prestacao"][120], 1524.75)
 
+    def test_simulacao_gera_tabela(self):
+        df = self.simulador.gerar_tabela_price()
+        self.assertTrue(hasattr(self.simulador, "tabela"))
+
 
 
 

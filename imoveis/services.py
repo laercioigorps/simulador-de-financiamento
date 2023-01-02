@@ -119,17 +119,12 @@ class SimuladorDeFinanciamento:
         df['Seguro_Cliente'] = df['Seguro_Cliente'].astype(float).round(2)
         df['Seguro_Imovel'] = df['Seguro_Imovel'].astype(float).round(2)
         df['Tarifa'] = df['Tarifa'].astype(float).round(2)
-
-
-
-
         #turn all into positive values
         df["Parcela"] = df["Parcela"].abs()
         df["Amortizacao"] = df["Amortizacao"].abs()
         df["Juros"] = df["Juros"].abs()
         df["Total_Pago"] = df["Total_Pago"].abs()
-
         #calculo total das prestações
         self.set_valor_total_prestacao(df)
-
-        return df
+        self.tabela = df
+        return self.tabela
