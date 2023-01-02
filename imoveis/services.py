@@ -126,5 +126,5 @@ class SimuladorDeFinanciamento:
         df["Total_Pago"] = df["Total_Pago"].abs()
         #calculo total das prestações
         self.set_valor_total_prestacao(df)
-        self.tabela = df
-        return self.tabela
+        self.tabela = df.to_dict("records")
+        return df
