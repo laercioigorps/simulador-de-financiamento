@@ -1,5 +1,8 @@
 from decimal import *
 import datetime
+import pandas as pd
+import numpy as np
+import numpy_financial as npf
 
 class SimuladorDeFinanciamento:
 
@@ -46,3 +49,66 @@ class SimuladorDeFinanciamento:
             self.calcular_ITBI()
         self.calcular_tac()
         self.valor_total = (self.valor_do_imovel - self.valor_da_entrada) + self.valor_tac + self.valor_ITBI
+
+    def gerar_tabela_price(self):
+        rng = pd.date_range(self.data, periods=self.prestacoes + 1, freq='MS')
+        rng.name = "Data_Pagamento"
+        df = pd.DataFrame(index=rng,columns=[], dtype='float')
+        df.reset_index(inplace=True)
+        df.index += 0
+        df.index.name = "Periodo"
+        #calculo do valor da parcela no sistema de amortização price
+        df["Parcela"] = npf.pmt(self.juros_mes/100, self.prestacoes, self.valor_total)
+        df.at[0,'Parcela'] = 0
+        
+        #calcolo do valor da amortização
+        df["Amortizacao"] = npf.ppmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
+        
+        df.at[0,'Amortizacao'] = 0
+        #calculo do valor do juros
+        df["Juros"] = npf.ipmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
+        df.at[0,'Juros'] = 0
+        
+        #calculo do valor total pago
+        df["Total_Pago"] = (df["Amortizacao"]).cumsum()
+
+        #calculo de saldo devedor
+        df["Saldo_Devedor"] = self.valor_total + df["Total_Pago"]
+
+        #calculo seguro cliente
+        df["Seguro_Cliente"] = df["Saldo_Devedor"] * self.indice_seguro_cliente/100
+        df.at[0,'Seguro_Cliente'] = 0
+
+        #calculo segudo do imovel
+        df["Seguro_Imovel"] = self.valor_do_imovel * self.indice_seguro_imovel/100
+        df.at[0,'Seguro_Imovel'] = 0
+
+
+        #definição de tarifas
+        df["Tarifa"] = self.tarifa
+        df.at[0,'Tarifa'] = 0
+
+  
+        # arredondar valores
+        df['Parcela'] = df['Parcela'].astype(float).round(2)
+        df['Amortizacao'] = df['Amortizacao'].astype(float).round(2)
+        df['Juros'] = df['Juros'].astype(float).round(2)
+        df['Total_Pago'] = df['Total_Pago'].astype(float).round(2)
+        df['Saldo_Devedor'] = df['Saldo_Devedor'].astype(float).round(2)
+        df['Seguro_Cliente'] = df['Seguro_Cliente'].astype(float).round(2)
+        df['Seguro_Imovel'] = df['Seguro_Imovel'].astype(float).round(2)
+        df['Tarifa'] = df['Tarifa'].astype(float).round(2)
+
+
+
+
+        #turn all into positive values
+        df["Parcela"] = df["Parcela"].abs()
+        df["Amortizacao"] = df["Amortizacao"].abs()
+        df["Juros"] = df["Juros"].abs()
+        df["Total_Pago"] = df["Total_Pago"].abs()
+
+        #calculo total das prestações
+        df["Prestacao"] = df["Parcela"] + df["Seguro_Cliente"] + df["Seguro_Imovel"] + df["Tarifa"]
+
+        return df
