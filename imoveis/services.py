@@ -13,7 +13,7 @@ class SimuladorDeFinanciamento:
         prestacoes = None, 
         incluir_ITBI = False
     ) -> None:
-        self.valor_do_imovel = valor_do_imovel
+        self.valor_do_imovel = valor_do_imovel.quantize(Decimal('.01'))  
         self.valor_da_entrada = valor_da_entrada
         self.prestacoes = prestacoes
         self.incluir_ITBI = incluir_ITBI
@@ -40,16 +40,16 @@ class SimuladorDeFinanciamento:
         self.indice_renda_composta = Decimal("32.00")
 
     def calcular_tac(self):
-        self.valor_tac = (self.valor_do_imovel - self.valor_da_entrada + self.valor_ITBI) * self.indice_tac/100
+        self.valor_tac = ((self.valor_do_imovel - self.valor_da_entrada + self.valor_ITBI) * self.indice_tac/100).quantize(Decimal('.01'))  
 
     def calcular_ITBI(self):
-        self.valor_ITBI = self.valor_do_imovel * self.indice_itbi/100
+        self.valor_ITBI = (self.valor_do_imovel * self.indice_itbi/100).quantize(Decimal('.01'))  
 
     def calcular_emprestimo_total(self):
         if(self.incluir_ITBI):
             self.calcular_ITBI()
         self.calcular_tac()
-        self.valor_total = (self.valor_do_imovel - self.valor_da_entrada) + self.valor_tac + self.valor_ITBI
+        self.valor_total = ((self.valor_do_imovel - self.valor_da_entrada) + self.valor_tac + self.valor_ITBI).quantize(Decimal('.01'))  
 
     def get_tabela_inicial_com_datas(self):
         rng = pd.date_range(self.data, periods=self.prestacoes + 1, freq='MS')
