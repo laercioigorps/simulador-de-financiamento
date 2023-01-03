@@ -20,6 +20,7 @@ class SimuladorDeFinanciamentoTest(TestCase):
         self.simulador.indice_seguro_imovel = Decimal("0.0044")
         self.simulador.tarifa = Decimal("25.00")
         self.simulador.indice_tac = Decimal("4")
+        self.simulador.indice_renda_composta = Decimal("32")
         #valor total do financiamento fica 124800.00
         self.simulador.calcular_emprestimo_total()
 
@@ -50,6 +51,7 @@ class SimuladorDeFinanciamentoTest(TestCase):
         self.assertTrue(hasattr(simulador, "indice_seguro_cliente"))
         self.assertTrue(hasattr(simulador, "indice_seguro_imovel"))
         self.assertTrue(hasattr(simulador, "tarifa"))
+        self.assertTrue(hasattr(simulador, "indice_renda_composta"))
 
     def test_simulador_de_financiamento_init(self):
         simulador = SimuladorDeFinanciamento(
@@ -95,6 +97,10 @@ class SimuladorDeFinanciamentoTest(TestCase):
     def test_get_cet_anualizado(self):
         self.simulador.gerar_tabela_price()
         self.assertEqual(self.simulador.get_cet(), Decimal("8.82"))
+
+    def test_get_renda_composta(self):
+        self.simulador.gerar_tabela_price()
+        self.assertEqual(self.simulador.get_renda_composta(), Decimal("3381.03"))
 
 
 class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):

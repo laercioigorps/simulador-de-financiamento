@@ -37,6 +37,7 @@ class SimuladorDeFinanciamento:
         self.indice_seguro_imovel = Decimal("0.0044")
         self.tarifa = Decimal("25.00")
         self.indice_tac = Decimal("4")
+        self.indice_renda_composta = Decimal("32.00")
 
     def calcular_tac(self):
         self.valor_tac = (self.valor_do_imovel - self.valor_da_entrada + self.valor_ITBI) * self.indice_tac/100
@@ -61,7 +62,11 @@ class SimuladorDeFinanciamento:
 
     def get_cet(self):
         cet_mes = npf.rate(self.prestacoes, -Decimal(self.prestacao), self.valor_total, 0)
-        return ((((1 + cet_mes) ** 12) -1) *100).quantize(Decimal('.01'))  
+        return ((((1 + cet_mes) ** 12) -1) *100).quantize(Decimal('.01'))
+
+    def get_renda_composta(self):
+        print(self.prestacao)
+        return (Decimal(str(self.prestacao))*100/self.indice_renda_composta).quantize(Decimal('.01'))
 
     def set_valor_parcela_price(self, df):
         df["Parcela"] = npf.pmt(self.juros_mes/100, self.prestacoes, self.valor_total)
