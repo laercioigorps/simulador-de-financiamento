@@ -5,6 +5,24 @@ import datetime
 
 class SimuladorDeFinanciamentoTest(TestCase):
 
+    def setUp(self) -> None:
+        self.simulador = SimuladorDeFinanciamento(
+            valor_do_imovel=Decimal("150000"),
+            valor_da_entrada=Decimal("30000"),
+            prestacoes = 240,
+            incluir_ITBI=False,
+        )
+        # define taxas e indices para testes
+        self.simulador.set_juros_mes(Decimal("0.64"))
+        self.simulador.indice_itbi = Decimal("5.2")
+        self.simulador.indice_custas = 0
+        self.simulador.indice_seguro_cliente = Decimal("0.025017795")
+        self.simulador.indice_seguro_imovel = Decimal("0.0044")
+        self.simulador.tarifa = Decimal("25.00")
+        self.simulador.indice_tac = Decimal("4")
+        #valor total do financiamento fica 124800.00
+        self.simulador.calcular_emprestimo_total()
+
     def test_set_juros_mes_atualiza_juros_ano(self):
         simulador = SimuladorDeFinanciamento()
         juros_mes = 1
@@ -46,56 +64,28 @@ class SimuladorDeFinanciamentoTest(TestCase):
         self.assertEqual(simulador.incluir_ITBI, False)
 
     def test_calculo_do_valor_tac(self):
-        simulador = SimuladorDeFinanciamento(
-            valor_do_imovel=Decimal("150000"),
-            valor_da_entrada=Decimal("30000"),
-            prestacoes = 240,
-            incluir_ITBI=False,
-        )
-        simulador.calcular_tac()
-        self.assertEqual(simulador.valor_tac, Decimal("4800"))
+        self.assertEqual(self.simulador.valor_tac, Decimal("4800"))
 
     def test_calculo_do_valor_ITBI(self):
-        simulador = SimuladorDeFinanciamento(
-            valor_do_imovel=Decimal("150000"),
-            valor_da_entrada=Decimal("30000"),
-            prestacoes = 240,
-            incluir_ITBI=True,
-        )
-        simulador.calcular_ITBI()
-        self.assertEqual(simulador.valor_ITBI, Decimal("7800"))
+        self.simulador.incluir_ITBI = True
+        self.simulador.calcular_ITBI()
+        self.assertEqual(self.simulador.valor_ITBI, Decimal("7800"))
 
 
     def test_calcular_valor_total_do_financiamento_sem_ITBI(self):
-        simulador = SimuladorDeFinanciamento(
-            valor_do_imovel=Decimal("150000"),
-            valor_da_entrada=Decimal("30000"),
-            prestacoes = 240,
-            incluir_ITBI=False,
-        )
-        simulador.calcular_emprestimo_total()
-        self.assertEqual(simulador.valor_total, Decimal("124800.00"))
+        self.simulador.calcular_emprestimo_total()
+        self.assertEqual(self.simulador.valor_total, Decimal("124800.00"))
 
 
     def test_calcular_valor_total_do_financiamento_com_ITBI(self):
-        simulador = SimuladorDeFinanciamento(
-            valor_do_imovel=Decimal("150000"),
-            valor_da_entrada=Decimal("30000"),
-            prestacoes = 240,
-            incluir_ITBI=True,
-        )
-        simulador.calcular_emprestimo_total()
-        self.assertEqual(simulador.valor_total, Decimal("132912.00"))
+        self.simulador.incluir_ITBI = True
+        self.simulador.calcular_emprestimo_total()
+        self.assertEqual(self.simulador.valor_total, Decimal("132912.00"))
 
     
     def test_data_de_simulacao_hoje(self):
-        simulador = SimuladorDeFinanciamento(
-            valor_do_imovel=Decimal("150000"),
-            valor_da_entrada=Decimal("30000"),
-            prestacoes = 240,
-            incluir_ITBI=True,
-        )
-        self.assertEqual(simulador.data, datetime.date.today())
+        self.simulador.incluir_ITBI = True
+        self.assertEqual(self.simulador.data, datetime.date.today())
 
 
 class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
