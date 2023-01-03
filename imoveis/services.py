@@ -59,6 +59,10 @@ class SimuladorDeFinanciamento:
         df.index.name = "Periodo"
         return df
 
+    def get_cet(self):
+        cet_mes = npf.rate(self.prestacoes, -Decimal(self.prestacao), self.valor_total, 0)
+        return ((((1 + cet_mes) ** 12) -1) *100).quantize(Decimal('.01'))  
+
     def set_valor_parcela_price(self, df):
         df["Parcela"] = npf.pmt(self.juros_mes/100, self.prestacoes, self.valor_total)
         df.at[0,'Parcela'] = 0
