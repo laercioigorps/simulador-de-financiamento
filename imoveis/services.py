@@ -15,7 +15,8 @@ class SimuladorDeFinanciamento:
     ) -> None:
         self.valor_do_imovel = valor_do_imovel
         if(self.valor_do_imovel):
-            self.valor_do_imovel = valor_do_imovel.quantize(Decimal('.01')) 
+            self.valor_do_imovel = valor_do_imovel.quantize(Decimal('.01'))
+            self.saldo_vendedor = valor_do_imovel - valor_da_entrada
         self.valor_da_entrada = valor_da_entrada
         self.prestacoes = prestacoes
         self.incluir_ITBI = incluir_ITBI
@@ -67,7 +68,6 @@ class SimuladorDeFinanciamento:
         return ((((1 + cet_mes) ** 12) -1) *100).quantize(Decimal('.01'))
 
     def get_renda_composta(self):
-        print(self.prestacao)
         return (Decimal(str(self.prestacao))*100/self.indice_renda_composta).quantize(Decimal('.01'))
 
     def set_valor_parcela_price(self, df):

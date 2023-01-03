@@ -102,6 +102,9 @@ class SimuladorDeFinanciamentoTest(TestCase):
         self.simulador.gerar_tabela_price()
         self.assertEqual(self.simulador.get_renda_composta(), Decimal("3381.03"))
 
+    def test_simulacao_tem_saldo_com_vendedor(self):
+        self.assertEqual(self.simulador.saldo_vendedor, Decimal("120000.00"))
+
 
 class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
 
