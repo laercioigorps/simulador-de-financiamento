@@ -16,7 +16,7 @@ class SimuladorDeFinanciamento:
         self.valor_do_imovel = valor_do_imovel
         if(self.valor_do_imovel):
             self.valor_do_imovel = valor_do_imovel.quantize(Decimal('.01'))
-            self.saldo_vendedor = valor_do_imovel - valor_da_entrada
+            self.saldo_vendedor = (valor_do_imovel - valor_da_entrada).quantize(Decimal('.01'))
         self.valor_da_entrada = valor_da_entrada
         self.prestacoes = prestacoes
         self.incluir_ITBI = incluir_ITBI
