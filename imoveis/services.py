@@ -98,6 +98,9 @@ class SimuladorDeFinanciamento:
 
     def set_valor_total_prestacao(self, df):
         df["Prestacao"] = df["Parcela"] + df["Seguro_Cliente"] + df["Seguro_Imovel"] + df["Tarifa"]
+        df['Prestacao'] = df['Prestacao'].astype(float).round(2)
+        #registra a primeira prestacao como a base do financiamento
+        self.prestacao = df["Prestacao"][1]
         return df
 
     def gerar_tabela_price(self):

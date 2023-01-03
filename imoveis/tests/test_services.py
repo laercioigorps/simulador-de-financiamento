@@ -85,7 +85,12 @@ class SimuladorDeFinanciamentoTest(TestCase):
     
     def test_data_de_simulacao_hoje(self):
         self.simulador.incluir_ITBI = True
+        self.simulador.calcular_emprestimo_total()
         self.assertEqual(self.simulador.data, datetime.date.today())
+
+    def test_tem_valor_das_prestacoes(self):
+        self.simulador.gerar_tabela_price()
+        self.assertEqual(self.simulador.prestacao, 1081.93)
 
 
 class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
