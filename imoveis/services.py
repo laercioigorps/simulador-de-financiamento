@@ -13,7 +13,7 @@ class SimuladorDeFinanciamento:
         prestacoes = None, 
         incluir_ITBI = False
     ) -> None:
-        self.valor_do_imovel = valor_do_imovel.quantize(Decimal('.01'))  
+        self.valor_do_imovel = valor_do_imovel
         self.valor_da_entrada = valor_da_entrada
         self.prestacoes = prestacoes
         self.incluir_ITBI = incluir_ITBI
