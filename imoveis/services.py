@@ -33,7 +33,7 @@ class SimuladorDeFinanciamento:
         self.juros_mes = (((1 + self.juros_ano/100) ** Decimal(1/12) - 1) * 100).quantize(Decimal('.01'))
 
     def atualizar_indices(self):
-        self.set_juros_mes(0.64)
+        self.set_juros_ano(7.99)
         self.indice_itbi = Decimal("5.2")
         self.indice_custas = 0
         self.indice_seguro_cliente = Decimal("0.025017795")
