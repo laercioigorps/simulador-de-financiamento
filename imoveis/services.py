@@ -94,7 +94,7 @@ class SimuladorDeFinanciamento:
         return df
 
     def set_seguro_cliente(self, df):
-        df["Seguro_Cliente"] = df["Saldo_Devedor"] * self.indice_seguro_cliente/100
+        df["Seguro_Cliente"] = (df["Saldo_Devedor"] - df["Amortizacao"]) * self.indice_seguro_cliente/100
         df.at[0,'Seguro_Cliente'] = 0
         return df
 

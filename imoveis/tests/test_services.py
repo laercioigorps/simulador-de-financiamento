@@ -92,15 +92,15 @@ class SimuladorDeFinanciamentoTest(TestCase):
 
     def test_tem_valor_das_prestacoes(self):
         self.simulador.gerar_tabela_price()
-        self.assertEqual(self.simulador.prestacao, 1081.93)
+        self.assertEqual(self.simulador.prestacao, 1081.98)
 
     def test_get_cet_anualizado(self):
         self.simulador.gerar_tabela_price()
         self.assertEqual(self.simulador.get_cet(), Decimal("8.82"))
 
     def test_get_renda_composta(self):
-        self.simulador.gerar_tabela_price()
-        self.assertEqual(self.simulador.get_renda_composta(), Decimal("3381.03"))
+        self.simulador.prestacao = Decimal("1558.01")
+        self.assertEqual(self.simulador.get_renda_composta(), Decimal("4868.78"))
 
     def test_simulacao_tem_saldo_com_vendedor(self):
         self.assertEqual(self.simulador.saldo_vendedor, Decimal("120000.00"))
@@ -191,8 +191,8 @@ class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
         #primeiro seguro cliente com valor 0
         self.assertEqual(df["Seguro_Cliente"][0], 0)
         #demais parcelas
-        self.assertEqual(df["Seguro_Cliente"][1], 31.05)
-        self.assertEqual(df["Seguro_Cliente"][120],0)
+        self.assertEqual(df["Seguro_Cliente"][1], 31.22)
+        self.assertEqual(df["Seguro_Cliente"][120],0.37)
 
     def test_valor_seguro_imovel(self):
         df = self.simulador.gerar_tabela_price()
@@ -218,8 +218,8 @@ class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
         #primeiro parcela com tarifa 0
         self.assertEqual(df["Prestacao"][0], 0)
         #demais parcelas fixas
-        self.assertEqual(df["Prestacao"][1], 1555.8)
-        self.assertEqual(df["Prestacao"][120], 1524.75)
+        self.assertEqual(df["Prestacao"][1], 1555.97)
+        self.assertEqual(df["Prestacao"][120], 1525.12)
 
     def test_simulacao_gera_tabela(self):
         df = self.simulador.gerar_tabela_price()
