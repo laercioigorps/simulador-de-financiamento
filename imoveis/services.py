@@ -75,13 +75,28 @@ class SimuladorDeFinanciamento:
         df.at[0,'Parcela'] = 0
         return df
 
+    def set_valor_parcela_sac(self, df):
+        df['Parcela'] = df['Juros'] + df['Amortizacao'].abs()
+        df.at[0,'Parcela'] = 0
+        return df
+
     def set_valor_amortizacao_price(self, df):
         df["Amortizacao"] = npf.ppmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
         df.at[0,'Amortizacao'] = 0
         return df
 
+    def set_valor_amortizacao_sac(self, df):
+        df["Amortizacao"] = -self.valor_total/self.prestacoes
+        df.at[0,'Amortizacao'] = 0
+        return df
+
     def set_valor_juros(self, df):
         df["Juros"] = npf.ipmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
+        df.at[0,'Juros'] = 0
+        return df
+
+    def set_valor_juros_sac(self, df):
+        df["Juros"] = ((df["Saldo_Devedor"] - df["Amortizacao"]) * float(self.juros_mes/100)).round(2)
         df.at[0,'Juros'] = 0
         return df
 
