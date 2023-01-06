@@ -11,7 +11,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Valor do imóvel:</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{simulacao.valor_do_imovel|intcomma}}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{simulacao.valor_do_imovel|floatformat:'2g'}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -29,7 +29,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Saldo com vendedor:</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{simulacao.saldo_vendedor|intcomma}}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{simulacao.saldo_vendedor|floatformat:'2g'}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -62,19 +62,19 @@
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 Juros (a.a.)
-                <h5>{{simulacao.juros_ano}} %</h5>
+                <h5>{{simulacao.juros_ano|floatformat:'2'}}%</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 Juros (a.m.)
-                <h5>0.64%</h5>
+                <h5>{{simulacao.juros_mes|floatformat:'2'}}%</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 *CET (a.a.)
-                <h5>{{simulacao.get_cet}}%</h5>
+                <h5>{{simulacao.get_cet|floatformat:'2'}}%</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
@@ -94,19 +94,19 @@
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 TAC
-                <h5>R$ {{simulacao.valor_tac|intcomma}}</h5>
+                <h5>R$ {{simulacao.valor_tac|floatformat:'2g'}}</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 ITBI + custas
-                <h5>R$ {{simulacao.valor_ITBI|intcomma}}</h5>
+                <h5>R$ {{simulacao.valor_ITBI|floatformat:'2g'}}</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 Empréstimo total
-                <h5>R${{simulacao.valor_total|intcomma}}</h5>
+                <h5>R${{simulacao.valor_total|floatformat:'2g'}}</h5>
             </div>
         </div>
 
@@ -114,13 +114,13 @@
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 Parcela
-                <h5>R$ {{simulacao.tabela.1.Prestacao|intcomma}}</h5>
+                <h5>R$ {{simulacao.tabela.1.Prestacao|floatformat:'2g'}}</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 Renda composta
-                <h5>R$ {{simulacao.get_renda_composta|intcomma}}</h5>
+                <h5>R$ {{simulacao.get_renda_composta|floatformat:'2g'}}</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
@@ -160,14 +160,14 @@
                         <tr>
                         <th scope="row">{{forloop.counter0}}</th>
                         <td>{{linha.Data_Pagamento|date:"d/m/Y"}}</td>
-                        <td>R$ {{linha.Amortizacao}}</td>
-                        <td>R$ {{linha.Juros}}</td>
-                        <td>R$ {{linha.Parcela}}</td>
-                        <td>R$ {{linha.Saldo_Devedor}}</td>
-                        <td>R$ {{linha.Seguro_Cliente}}</td>
-                        <td>R$ {{linha.Seguro_Imovel}}</td>
-                        <td>R$ {{linha.Tarifa}}</td>
-                        <td>R$ {{linha.Prestacao}}</td>
+                        <td>R$ {{linha.Amortizacao|floatformat:'2g'}}</td>
+                        <td>R$ {{linha.Juros|floatformat:'2g'}}</td>
+                        <td>R$ {{linha.Parcela|floatformat:'2g'}}</td>
+                        <td>R$ {{linha.Saldo_Devedor|floatformat:'2g'}}</td>
+                        <td>R$ {{linha.Seguro_Cliente|floatformat:'2g'}}</td>
+                        <td>R$ {{linha.Seguro_Imovel|floatformat:2}}</td>
+                        <td>R$ {{linha.Tarifa|floatformat:'2g'}}</td>
+                        <td>R$ {{linha.Prestacao|floatformat:'2g'}}</td>
                       </tr>
                     {% endfor %}
                 </tbody>
