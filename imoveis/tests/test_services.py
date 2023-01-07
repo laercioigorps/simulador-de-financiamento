@@ -96,7 +96,7 @@ class SimuladorDeFinanciamentoTest(TestCase):
 
     def test_get_cet_anualizado(self):
         self.simulador.gerar_tabela_price()
-        self.assertEqual(self.simulador.get_cet(), Decimal("8.82"))
+        self.assertEqual(self.simulador.get_cet(), 8.72)
 
     def test_get_renda_composta(self):
         self.simulador.prestacao = Decimal("1558.01")

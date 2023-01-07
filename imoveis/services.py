@@ -64,8 +64,10 @@ class SimuladorDeFinanciamento:
         return df
 
     def get_cet(self):
-        cet_mes = npf.rate(self.prestacoes, -Decimal(self.prestacao), self.valor_total, 0)
-        return ((((1 + cet_mes) ** 12) -1) *100).quantize(Decimal('.01'))
+        prest = [-self.valor_total ] + self.df["Prestacao"].to_list()[1:]
+        cet_m = npf.irr(prest) *100
+        cet_ano = round((((1 + cet_m/100) ** 12) -1) *100, 2)
+        return cet_ano
 
     def get_renda_composta(self):
         return (Decimal(str(self.prestacao))*100/self.indice_renda_composta).quantize(Decimal('.01'))
@@ -167,6 +169,7 @@ class SimuladorDeFinanciamento:
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
         self.amortizacao="PRICE"
+        self.df = df
         return df
 
     def gerar_tabela_sac(self):
@@ -187,4 +190,5 @@ class SimuladorDeFinanciamento:
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
         self.amortizacao="SAC"
+        self.df = df
         return df
