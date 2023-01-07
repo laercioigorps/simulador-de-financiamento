@@ -2,16 +2,16 @@ from django.test import TestCase
 from ..forms import SimulacaoFormulario
 import datetime
 
-class FormDeSimulacaoTest(TestCase):
 
+class FormDeSimulacaoTest(TestCase):
     def setUp(self) -> None:
         self.validSimulationData = {
-            "data_nascimento" : "09/08/1997",
-            "valor_do_imovel" : 150000,
-            "valor_da_entrada" : 30000,
-            "incluir_ITBI" : False,
-            "prestacoes" : 360,
-            "amortizacao" : "PRICE",
+            "data_nascimento": "09/08/1997",
+            "valor_do_imovel": 150000,
+            "valor_da_entrada": 30000,
+            "incluir_ITBI": False,
+            "prestacoes": 360,
+            "amortizacao": "PRICE",
         }
         self.form = SimulacaoFormulario()
 
@@ -23,7 +23,7 @@ class FormDeSimulacaoTest(TestCase):
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertTrue(form.is_valid())
 
-#testes do campo de valor do imóvel
+    # testes do campo de valor do imóvel
 
     def test_not_valid_price(self):
         data = self.validSimulationData
@@ -31,7 +31,6 @@ class FormDeSimulacaoTest(TestCase):
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertFalse(form.is_valid())
 
-    
     def test_form_price_decimal_field(self):
         data = self.validSimulationData
         data["valor_do_imovel"] = 120.12
@@ -39,7 +38,6 @@ class FormDeSimulacaoTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(str(form.cleaned_data["valor_do_imovel"]), "120.12")
 
-    
     def test_form_price_decimal_field(self):
         data = self.validSimulationData
         data["valor_do_imovel"] = 120.12
@@ -53,7 +51,7 @@ class FormDeSimulacaoTest(TestCase):
         form = SimulacaoFormulario(data)
         self.assertFalse(form.is_valid())
 
-#testes do campo de valor da entrada
+    # testes do campo de valor da entrada
 
     def test_valor_da_entrada_invalido(self):
         data = self.validSimulationData
@@ -73,9 +71,12 @@ class FormDeSimulacaoTest(TestCase):
         data["valor_da_entrada"] = 20000
         form = SimulacaoFormulario(data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors["valor_da_entrada"][0], "Entrada não pode ser menor que 20% do valor do imovel")
+        self.assertEqual(
+            form.errors["valor_da_entrada"][0],
+            "Entrada não pode ser menor que 20% do valor do imovel",
+        )
 
- #testes do campo de data de nascimento 
+    # testes do campo de data de nascimento
     def test_data_de_nascimento_formato_invalido(self):
         data = self.validSimulationData
         data["data_nascimento"] = "120"
@@ -84,16 +85,21 @@ class FormDeSimulacaoTest(TestCase):
 
     def test_data_de_nascimento_menor_de_18_anos_erro(self):
         # date de 17 anos atrás
-        date = datetime.date.today() - datetime.timedelta(weeks=4*12*17)
+        date = datetime.date.today() - datetime.timedelta(weeks=4 * 12 * 17)
         data = self.validSimulationData
         data["data_nascimento"] = date.strftime("%Y-%m-%d")
         form = SimulacaoFormulario(data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors["data_nascimento"][0], "É necessario ser maior de idade para realizar financiamento!")
+        self.assertEqual(
+            form.errors["data_nascimento"][0],
+            "É necessario ser maior de idade para realizar financiamento!",
+        )
 
     def test_data_de_nascimento_maior_de_18_anos_valida(self):
         # date de 19 anos atrás
-        mesmo_dia_19_anos_atras = date = datetime.date.today() - datetime.timedelta(days= 365*19)
+        mesmo_dia_19_anos_atras = date = datetime.date.today() - datetime.timedelta(
+            days=365 * 19
+        )
         data = self.validSimulationData
         data["data_nascimento"] = mesmo_dia_19_anos_atras.strftime("%Y-%m-%d")
         form = SimulacaoFormulario(data)
@@ -104,8 +110,8 @@ class FormDeSimulacaoTest(TestCase):
         del self.validSimulationData["data_nascimento"]
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertFalse(form.is_valid())
-    
-#testes do campo de prazo de pagamento
+
+    # testes do campo de prazo de pagamento
 
     def test_campo_de_prazo_de_pagamento_required(self):
         del self.validSimulationData["prestacoes"]
@@ -133,7 +139,7 @@ class FormDeSimulacaoTest(TestCase):
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertFalse(form.is_valid())
 
-#teste campo de financiamento ITBI
+    # teste campo de financiamento ITBI
 
     def test_campo_de_ITBI_com_2_opcoes(self):
         self.validSimulationData["incluir_ITBI"] = "true"
@@ -145,17 +151,15 @@ class FormDeSimulacaoTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertFalse(form.cleaned_data["incluir_ITBI"])
 
-# test campo sistema de amortização
-        
+    # test campo sistema de amortização
+
     def test_campo_amortizacao_sem_dados(self):
         del self.validSimulationData["amortizacao"]
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertFalse(form.is_valid())
 
     def test_campo_amortizacao_com_valor_invalido(self):
-        #opções validas: "PRICE" e "SAC"
+        # opções validas: "PRICE" e "SAC"
         self.validSimulationData["amortizacao"] = "CAS"
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertFalse(form.is_valid())
-
-    
