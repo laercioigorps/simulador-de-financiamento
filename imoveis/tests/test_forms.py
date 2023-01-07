@@ -11,6 +11,7 @@ class FormDeSimulacaoTest(TestCase):
             "valor_da_entrada" : 30000,
             "incluir_ITBI" : False,
             "prestacoes" : 360,
+            "amortizacao" : "PRICE",
         }
         self.form = SimulacaoFormulario()
 
@@ -143,5 +144,18 @@ class FormDeSimulacaoTest(TestCase):
         form = SimulacaoFormulario(self.validSimulationData)
         self.assertTrue(form.is_valid())
         self.assertFalse(form.cleaned_data["incluir_ITBI"])
+
+# test campo sistema de amortização
+        
+    def test_campo_amortizacao_sem_dados(self):
+        del self.validSimulationData["amortizacao"]
+        form = SimulacaoFormulario(self.validSimulationData)
+        self.assertFalse(form.is_valid())
+
+    def test_campo_amortizacao_com_valor_invalido(self):
+        #opções validas: "PRICE" e "SAC"
+        self.validSimulationData["amortizacao"] = "CAS"
+        form = SimulacaoFormulario(self.validSimulationData)
+        self.assertFalse(form.is_valid())
 
     

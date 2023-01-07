@@ -8,6 +8,7 @@ class SimulacaoFormulario(forms.Form):
     data_nascimento = forms.DateField()
     prestacoes = forms.ChoiceField(choices=(("120", "120"),("180", "180"),("240", "240"), ("360", "360")))
     incluir_ITBI = forms.BooleanField(required=False)
+    amortizacao = forms.ChoiceField(choices=(("SAC", "SAC"),("PRICE", "PRICE")))
 
     def clean(self):
         cleaned_data = super().clean()

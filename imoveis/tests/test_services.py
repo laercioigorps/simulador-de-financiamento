@@ -296,4 +296,13 @@ class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
         self.assertTrue(hasattr(self.simulador, "tabela"))
         self.assertEqual(type(self.simulador.tabela), list)
 
+    
+    def test_gerar_tabela_sac_gera_atributo_amortizacao_sac(self):
+        df = self.simulador.gerar_tabela_sac()
+        self.assertEqual(self.simulador.amortizacao, "SAC")
+
+    def test_gerar_tabela_price_gera_atributo_amortizacao_price(self):
+        df = self.simulador.gerar_tabela_price()
+        self.assertEqual(self.simulador.amortizacao, "PRICE")
+
 

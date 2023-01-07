@@ -166,6 +166,7 @@ class SimuladorDeFinanciamento:
         #calculo total das prestações
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
+        self.amortizacao="PRICE"
         return df
 
     def gerar_tabela_sac(self):
@@ -185,4 +186,5 @@ class SimuladorDeFinanciamento:
         df = self.set_positivo(df)
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
+        self.amortizacao="SAC"
         return df

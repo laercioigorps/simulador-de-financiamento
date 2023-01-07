@@ -15,6 +15,7 @@ class SimuladorDeImoveisViewTest(TestCase):
             "valor_do_imovel" : 150000,
             "valor_da_entrada" : 30000,
             "prestacoes" : 360,
+            "amortizacao" : "PRICE"
         }
 
     def test_get_pagina_do_simulador(self):
@@ -70,12 +71,27 @@ class SimuladorDeImoveisViewTest(TestCase):
         self.assertTrue("simulacao" in response.context)
         simulacao = response.context["simulacao"]
         #testa se valores da simulação estão corretos
+        self.assertEqual(simulacao.amortizacao, "PRICE")
         self.assertEqual(simulacao.valor_do_imovel, self.validSimulationData["valor_do_imovel"])
         self.assertEqual(simulacao.valor_da_entrada, self.validSimulationData["valor_da_entrada"])
         self.assertEqual(int(simulacao.prestacoes), self.validSimulationData["prestacoes"])
         self.assertEqual(simulacao.incluir_ITBI, False)
-
         self.assertEqual(simulacao.valor_total, 124800)
+        self.assertTrue(hasattr(simulacao, "tabela"))
 
+    
+    def test_resposta_da_simulacao_SAC_contem_objeto_simulacao_e_tabela(self):
+        self.validSimulationData["amortizacao"] = "SAC"
+        response = self.client.get(reverse("imoveis:resultado-simulacao"), self.validSimulationData)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("simulacao" in response.context)
+        simulacao = response.context["simulacao"]
+        #testa se valores da simulação estão corretos
+        self.assertEqual(simulacao.amortizacao, "SAC")
+        self.assertEqual(simulacao.valor_do_imovel, self.validSimulationData["valor_do_imovel"])
+        self.assertEqual(simulacao.valor_da_entrada, self.validSimulationData["valor_da_entrada"])
+        self.assertEqual(int(simulacao.prestacoes), self.validSimulationData["prestacoes"])
+        self.assertEqual(simulacao.incluir_ITBI, False)
+        self.assertEqual(simulacao.valor_total, 124800)
         self.assertTrue(hasattr(simulacao, "tabela"))
 

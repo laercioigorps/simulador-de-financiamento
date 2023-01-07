@@ -34,7 +34,6 @@
                         <p class="text-start text-danger">{{error}}</p>
                         {% endfor %}
                         <label for="valor_da_entrada">Valor da entrada</label>
-                        
                     </div>
                     <div class="form-floating">
                         <select class="form-select" aria-label="Default select example" name="prestacoes">
@@ -49,6 +48,16 @@
                         {% endfor %}
                         <label for="valor_da_entrada">Prazo de pagamento</label>
                     </div>
+                    <div class="form-floating">
+                        <select class="form-select" aria-label="Default select example" name="amortizacao">
+                            <option  selected value="PRICE">PRICE</option>
+                            <option  value="SAC">SAC</option>
+                        </select>
+                        {% for error in form.amortizacao.errors%}
+                            <p class="text-start text-danger">{{error}}</p>
+                        {% endfor %}
+                        <label for="valor_da_entrada">Sistema de Amortização</label>
+                    </div>                
                     <div class="form-check text-start mt-2 mb-2">
                         <input class="form-check-input" type="checkbox" name="incluir_ITBI" value="true" id="itbi">
                         <label class="form-check-label" for="itbi">

@@ -74,7 +74,11 @@
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 *CET (a.a.)
+                {% if simulacao.amortizacao == "PRICE" %}
                 <h5>{{simulacao.get_cet|floatformat:'2'}}%</h5>
+                {% else%}
+                <h5>Indisponível</h5>
+                {% endif %}
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
@@ -126,7 +130,7 @@
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-2 card">
                 Amortização
-                <h5>Price</h5>
+                <h5>{{simulacao.amortizacao}}</h5>
             </div>
 
             <!-- Earnings (Monthly) Card Example -->
