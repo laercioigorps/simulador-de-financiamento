@@ -226,50 +226,74 @@ class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
         self.assertTrue(hasattr(self.simulador, "tabela"))
         self.assertEqual(type(self.simulador.tabela), list)
 
-    def test_set_valor_amortizacao_por_parcela_sac(self):
-        self.simulador.valor_total = 120000
+    def test_gerar_tabela_sac_valor_amortizacao(self):
+        self.simulador.valor_total = Decimal("120000")
         self.simulador.prestacoes = 120
-        df = self.simulador.get_tabela_inicial_com_datas()
-        df = self.simulador.set_valor_amortizacao_sac(df)
+        df = self.simulador.gerar_tabela_sac()
         self.assertEqual(df["Amortizacao"][0], 0)
-        self.assertEqual(df["Amortizacao"][1], -1000)
+        self.assertEqual(df["Amortizacao"][1], 1000)
 
-    def test_set_valor_juros_por_parcela_sac(self):
-        self.simulador.valor_total = 120000
+    def test_gerar_tabela_sac_valor_juros(self):
+        self.simulador.valor_total = Decimal("120000")
         self.simulador.prestacoes = 120
-        df = self.simulador.get_tabela_inicial_com_datas()
-        df = self.simulador.set_valor_amortizacao_sac(df)
-        df = self.simulador.set_total_pago(df)
-        df = self.simulador.set_saldo_devedor(df)
-        df = self.simulador.set_valor_juros_sac(df)
+        df = self.simulador.gerar_tabela_sac()
         self.assertEqual(df["Juros"][0], 0)
         self.assertEqual(df["Juros"][1], 768)
         self.assertEqual(df["Juros"][2], 761.6)
         self.assertEqual(df["Juros"][3], 755.2)
         self.assertEqual(df["Juros"][120], 6.4)
 
-    
-    """ def test_set_valor_parcela_sac(self):
-        self.simulador.valor_total = 120000
+    def test_gerar_tabela_sac_valor_parcela(self):
+        self.simulador.valor_total = Decimal("120000")
         self.simulador.prestacoes = 120
-        df = self.simulador.get_tabela_inicial_com_datas()
-        df = self.simulador.set_valor_amortizacao_sac(df)
-        df = self.simulador.set_total_pago(df)
-        df = self.simulador.set_saldo_devedor(df)
-        df = self.simulador.set_valor_juros_sac(df)
-        df = self.simulador.set_valor_parcela_sac(df)
-
+        df = self.simulador.gerar_tabela_sac()
         self.assertEqual(df["Parcela"][0], 0)
         self.assertEqual(df["Parcela"][1], 1768)
         self.assertEqual(df["Parcela"][2], 1761.6)
         self.assertEqual(df["Parcela"][3], 1755.2)
         self.assertEqual(df["Parcela"][120], 1006.4)
 
-    def test_gerar_tabela_sac(self):
-        self.simulador.valor_total = 120000
-        self.simulador.prestacoes = 120
+    
+    def test_gerar_tabela_sac_valor_seguro_do_cliente(self):
         df = self.simulador.gerar_tabela_sac()
-        self.assertTrue("Prestacao" in df) """
+        self.assertTrue("Seguro_Cliente" in df)
+        #primeiro seguro cliente com valor 0
+        self.assertEqual(df["Seguro_Cliente"][0], 0)
+        #demais parcelas
+        self.assertEqual(df["Seguro_Cliente"][1], 31.22)
+        self.assertEqual(df["Seguro_Cliente"][120],0.26)
 
+
+    def test_gerar_tabela_sac_valor_seguro_imovel(self):
+        df = self.simulador.gerar_tabela_sac()
+        self.assertTrue("Seguro_Imovel" in df)
+        #primeiro seguro do imovel com valor 0
+        self.assertEqual(df["Seguro_Imovel"][0], 0)
+        #demais parcelas fixas
+        self.assertEqual(df["Seguro_Imovel"][1], 6.6)
+        self.assertEqual(df["Seguro_Imovel"][120],6.6)
+
+    def test_gerar_tabela_sac_valor_tarifas(self):
+        df = self.simulador.gerar_tabela_sac()
+        self.assertTrue("Tarifa" in df)
+        #primeiro parcela com tarifa 0
+        self.assertEqual(df["Tarifa"][0], 0)
+        #demais parcelas fixas
+        self.assertEqual(df["Tarifa"][1], 25)
+        self.assertEqual(df["Tarifa"][120],25)
+
+    def test_gerar_tabela_sac_valor_total_da_prestacao(self):
+        df = self.simulador.gerar_tabela_sac()
+        #primeiro parcela com tarifa 0
+        self.assertEqual(df["Prestacao"][0], 0)
+        #798.72(juros) + 1040(Amortização) + 31.22(seguro cliente) + 6.6(seguro imovel) + 25(taxas)
+        self.assertEqual(df["Prestacao"][1], 1901.54)
+        #6.66(juros) + 1040(Amortização) + 0.26 (seguro cliente) + 6.6(seguro imovel) + 25(taxas)
+        self.assertEqual(df["Prestacao"][120], 1078.52)
+
+    def test_gerar_tabela_sac_tabela(self):
+        df = self.simulador.gerar_tabela_sac()
+        self.assertTrue(hasattr(self.simulador, "tabela"))
+        self.assertEqual(type(self.simulador.tabela), list)
 
 

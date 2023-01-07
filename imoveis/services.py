@@ -76,13 +76,14 @@ class SimuladorDeFinanciamento:
         return df
 
     def set_valor_parcela_sac(self, df):
-        df['Parcela'] = df['Juros'] + df['Amortizacao'].abs()
+        df['Parcela'] = df['Juros'] + df['Amortizacao']
         df.at[0,'Parcela'] = 0
         return df
 
     def set_valor_amortizacao_price(self, df):
         df["Amortizacao"] = npf.ppmt(self.juros_mes/100, df.index, self.prestacoes, self.valor_total)
         df.at[0,'Amortizacao'] = 0
+
         return df
 
     def set_valor_amortizacao_sac(self, df):
@@ -96,7 +97,7 @@ class SimuladorDeFinanciamento:
         return df
 
     def set_valor_juros_sac(self, df):
-        df["Juros"] = ((df["Saldo_Devedor"] - df["Amortizacao"]) * float(self.juros_mes/100)).round(2)
+        df["Juros"] = -(df["Saldo_Devedor"] - df["Amortizacao"]) * self.juros_mes/100
         df.at[0,'Juros'] = 0
         return df
 
@@ -121,6 +122,7 @@ class SimuladorDeFinanciamento:
     def set_tarifas(self, df):
         df["Tarifa"] = self.tarifa
         df.at[0,'Tarifa'] = 0
+        return df
 
     def set_valor_total_prestacao(self, df):
         df["Prestacao"] = df["Parcela"] + df["Seguro_Cliente"] + df["Seguro_Imovel"] + df["Tarifa"]
@@ -162,6 +164,25 @@ class SimuladorDeFinanciamento:
         #turn all into positive values
         df = self.set_positivo(df)
         #calculo total das prestações
+        self.set_valor_total_prestacao(df)
+        self.tabela = df.to_dict("records")
+        return df
+
+    def gerar_tabela_sac(self):
+        df = self.get_tabela_inicial_com_datas()
+        df = self.set_valor_amortizacao_sac(df)
+        df = self.set_total_pago(df)
+        df = self.set_saldo_devedor(df)
+        df = self.set_valor_juros_sac(df)
+        df = self.set_valor_parcela_sac(df)
+        df = self.set_seguro_cliente(df)
+        df = self.set_seguro_imovel(df)
+        df = self.set_tarifas(df)
+
+        # arredondar valores
+        df = self.arredondar_valores(df)
+        #turn all into positive values
+        df = self.set_positivo(df)
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
         return df
