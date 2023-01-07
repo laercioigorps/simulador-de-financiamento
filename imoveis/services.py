@@ -129,6 +129,24 @@ class SimuladorDeFinanciamento:
         self.prestacao = df["Prestacao"][1]
         return df
 
+    def arredondar_valores(self, df):
+        df['Parcela'] = df['Parcela'].astype(float).round(2)
+        df['Amortizacao'] = df['Amortizacao'].astype(float).round(2)
+        df['Juros'] = df['Juros'].astype(float).round(2)
+        df['Total_Pago'] = df['Total_Pago'].astype(float).round(2)
+        df['Saldo_Devedor'] = df['Saldo_Devedor'].astype(float).round(2)
+        df['Seguro_Cliente'] = df['Seguro_Cliente'].astype(float).round(2)
+        df['Seguro_Imovel'] = df['Seguro_Imovel'].astype(float).round(2)
+        df['Tarifa'] = df['Tarifa'].astype(float).round(2)
+        return df
+
+    def set_positivo(self, df):
+        df["Parcela"] = df["Parcela"].abs()
+        df["Amortizacao"] = df["Amortizacao"].abs()
+        df["Juros"] = df["Juros"].abs()
+        df["Total_Pago"] = df["Total_Pago"].abs()
+        return df
+
     def gerar_tabela_price(self):
         df = self.get_tabela_inicial_com_datas()
         self.set_valor_parcela_price(df)
@@ -140,19 +158,9 @@ class SimuladorDeFinanciamento:
         self.set_seguro_imovel(df)
         self.set_tarifas(df)
         # arredondar valores
-        df['Parcela'] = df['Parcela'].astype(float).round(2)
-        df['Amortizacao'] = df['Amortizacao'].astype(float).round(2)
-        df['Juros'] = df['Juros'].astype(float).round(2)
-        df['Total_Pago'] = df['Total_Pago'].astype(float).round(2)
-        df['Saldo_Devedor'] = df['Saldo_Devedor'].astype(float).round(2)
-        df['Seguro_Cliente'] = df['Seguro_Cliente'].astype(float).round(2)
-        df['Seguro_Imovel'] = df['Seguro_Imovel'].astype(float).round(2)
-        df['Tarifa'] = df['Tarifa'].astype(float).round(2)
+        df = self.arredondar_valores(df)
         #turn all into positive values
-        df["Parcela"] = df["Parcela"].abs()
-        df["Amortizacao"] = df["Amortizacao"].abs()
-        df["Juros"] = df["Juros"].abs()
-        df["Total_Pago"] = df["Total_Pago"].abs()
+        df = self.set_positivo(df)
         #calculo total das prestações
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
