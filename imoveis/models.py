@@ -213,6 +213,7 @@ class Amortizacao(ABC):
     def get_valor_amortizacao(self):
         pass
 
+
 class AmortizacaoSAC(Amortizacao):
 
     nome = "SAC"
@@ -235,5 +236,5 @@ class AmortizacaoPRICE(Amortizacao):
         self.prestacoes = prestacoes
 
     def get_valor_amortizacao(self):
-        index = [i for i in range(1,self.prestacoes+1)]
-        return npf.ppmt(self.juros_mes, index , self.prestacoes, self.valor_total)
+        index = [i for i in range(1, self.prestacoes + 1)]
+        return npf.ppmt(self.juros_mes, index, self.prestacoes, self.valor_total)

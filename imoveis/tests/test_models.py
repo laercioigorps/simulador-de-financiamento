@@ -1,5 +1,10 @@
 from django.test import TestCase
-from ..models import SimuladorDeFinanciamento, Amortizacao, AmortizacaoSAC, AmortizacaoPRICE
+from ..models import (
+    SimuladorDeFinanciamento,
+    Amortizacao,
+    AmortizacaoSAC,
+    AmortizacaoPRICE,
+)
 from decimal import *
 import datetime
 
@@ -308,9 +313,7 @@ class SimuladorDeFinanciamentoGeracaoDeTabelaDFTest(TestCase):
         self.assertEqual(self.simulador.amortizacao, "PRICE")
 
 
-    
 class TestSistemaDeAmortizacao(TestCase):
-
     def test_amortizacao_class_abstrata_com_methodos_abstratos(self):
         with self.assertRaises(Exception):
             amortizacao = Amortizacao()
@@ -325,16 +328,18 @@ class TestSistemaDeAmortizacao(TestCase):
         self.assertEqual(sac.nome, "SAC")
 
     def test_amortizacao_PRICE(self):
-        price = AmortizacaoPRICE(juros_mes=Decimal("0.05"), valor_total=Decimal("100000") ,prestacoes=10)
+        price = AmortizacaoPRICE(
+            juros_mes=Decimal("0.05"), valor_total=Decimal("100000"), prestacoes=10
+        )
         amortizacao = price.get_valor_amortizacao()
         self.assertEqual(round(amortizacao[0], 2), Decimal("-7950.46"))
         self.assertEqual(round(amortizacao[9], 2), Decimal("-12333.77"))
 
-        price = AmortizacaoPRICE(juros_mes=Decimal("0.05"), valor_total=Decimal("150000") ,prestacoes=10)
+        price = AmortizacaoPRICE(
+            juros_mes=Decimal("0.05"), valor_total=Decimal("150000"), prestacoes=10
+        )
         amortizacao = price.get_valor_amortizacao()
         self.assertEqual(round(amortizacao[0], 2), Decimal("-11925.69"))
         self.assertEqual(round(amortizacao[9], 2), Decimal("-18500.65"))
 
         self.assertEqual(price.nome, "PRICE")
-
-    
