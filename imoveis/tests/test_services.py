@@ -3,8 +3,8 @@ from ..forms import SimulacaoFormulario
 from ..services import gerar_simulacao
 from ..models import SimuladorDeFinanciamento
 
-class TestServicoGerarSimulacao(TestCase):
 
+class TestServicoGerarSimulacao(TestCase):
     def setUp(self) -> None:
         self.validSimulationData = {
             "data_nascimento": "09/08/1997",
