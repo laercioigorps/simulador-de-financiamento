@@ -90,12 +90,7 @@ class SimuladorDeFinanciamento:
             Decimal(str(self.prestacao)) * 100 / self.indice_renda_composta
         ).quantize(Decimal(".01"))
 
-    def set_valor_parcela_price(self, df):
-        df["Parcela"] = npf.pmt(self.juros_mes / 100, self.prestacoes, self.valor_total)
-        df.at[0, "Parcela"] = 0
-        return df
-
-    def set_valor_parcela_sac(self, df):
+    def set_valor_parcela(self, df):
         df["Parcela"] = df["Juros"] + df["Amortizacao"]
         df.at[0, "Parcela"] = 0
         return df
@@ -114,13 +109,6 @@ class SimuladorDeFinanciamento:
         return df
 
     def set_valor_juros(self, df):
-        df["Juros"] = npf.ipmt(
-            self.juros_mes / 100, df.index, self.prestacoes, self.valor_total
-        )
-        df.at[0, "Juros"] = 0
-        return df
-
-    def set_valor_juros_sac(self, df):
         df["Juros"] = -(df["Saldo_Devedor"] - df["Amortizacao"]) * self.juros_mes / 100
         df.at[0, "Juros"] = 0
         return df
@@ -179,11 +167,11 @@ class SimuladorDeFinanciamento:
 
     def gerar_tabela_price(self):
         df = self.get_tabela_inicial_com_datas()
-        self.set_valor_parcela_price(df)
         self.set_valor_amortizacao_price(df)
-        self.set_valor_juros(df)
         self.set_total_pago(df)
         self.set_saldo_devedor(df)
+        self.set_valor_juros(df)
+        self.set_valor_parcela(df)
         self.set_seguro_cliente(df)
         self.set_seguro_imovel(df)
         self.set_tarifas(df)
@@ -203,8 +191,8 @@ class SimuladorDeFinanciamento:
         df = self.set_valor_amortizacao_sac(df)
         df = self.set_total_pago(df)
         df = self.set_saldo_devedor(df)
-        df = self.set_valor_juros_sac(df)
-        df = self.set_valor_parcela_sac(df)
+        df = self.set_valor_juros(df)
+        df = self.set_valor_parcela(df)
         df = self.set_seguro_cliente(df)
         df = self.set_seguro_imovel(df)
         df = self.set_tarifas(df)
