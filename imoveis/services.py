@@ -1,4 +1,5 @@
 from .models import SimuladorDeFinanciamento
+from .models import AmortizacaoPRICE, AmortizacaoSAC
 
 
 def gerar_simulacao(dados):
@@ -10,7 +11,8 @@ def gerar_simulacao(dados):
     )
     simulacao.calcular_emprestimo_total()
     if dados["amortizacao"] == "PRICE":
-        simulacao.gerar_tabela_price()
+        amortizacao = AmortizacaoPRICE(simulacao.juros_mes/100, simulacao.valor_total, simulacao.prestacoes)
     else:
-        simulacao.gerar_tabela_sac()
+        amortizacao = AmortizacaoSAC(simulacao.valor_total, simulacao.prestacoes)
+    simulacao.gerar_tabela(amortizacao)
     return simulacao

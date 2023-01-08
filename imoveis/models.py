@@ -2,6 +2,7 @@ from decimal import *
 import datetime
 import pandas as pd
 import numpy_financial as npf
+import numpy as np
 from abc import ABC, abstractmethod
 
 
@@ -95,17 +96,15 @@ class SimuladorDeFinanciamento:
         df.at[0, "Parcela"] = 0
         return df
 
-    def set_valor_amortizacao_price(self, df):
-        amortizacao = npf.ppmt(
-            self.juros_mes / 100, df.index, self.prestacoes, self.valor_total
-        )
-        amortizacao[0] = Decimal("0")
-        df["Amortizacao"] = amortizacao
-        return df
+    def set_valor_amortizacao(self, df, sistema_de_amortizacao):
+        amortizacao = sistema_de_amortizacao.get_valor_amortizacao()
+        if(type(amortizacao) == np.ndarray):
+            amortizacao = np.insert(amortizacao, 0, Decimal("0"), axis=0)
+            df["Amortizacao"] = amortizacao
+        else:
+            df["Amortizacao"] = amortizacao
+            df.at[0, "Amortizacao"] = 0
 
-    def set_valor_amortizacao_sac(self, df):
-        df["Amortizacao"] = -self.valor_total / self.prestacoes
-        df.at[0, "Amortizacao"] = 0
         return df
 
     def set_valor_juros(self, df):
@@ -165,9 +164,9 @@ class SimuladorDeFinanciamento:
         df["Total_Pago"] = df["Total_Pago"].abs()
         return df
 
-    def gerar_tabela_price(self):
+    def gerar_tabela(self, sistemaDeAmortizacao):
         df = self.get_tabela_inicial_com_datas()
-        self.set_valor_amortizacao_price(df)
+        self.set_valor_amortizacao(df, sistemaDeAmortizacao)
         self.set_total_pago(df)
         self.set_saldo_devedor(df)
         self.set_valor_juros(df)
@@ -182,30 +181,10 @@ class SimuladorDeFinanciamento:
         # calculo total das prestações
         self.set_valor_total_prestacao(df)
         self.tabela = df.to_dict("records")
-        self.amortizacao = "PRICE"
+        self.amortizacao = sistemaDeAmortizacao.nome
         self.df = df
         return df
 
-    def gerar_tabela_sac(self):
-        df = self.get_tabela_inicial_com_datas()
-        df = self.set_valor_amortizacao_sac(df)
-        df = self.set_total_pago(df)
-        df = self.set_saldo_devedor(df)
-        df = self.set_valor_juros(df)
-        df = self.set_valor_parcela(df)
-        df = self.set_seguro_cliente(df)
-        df = self.set_seguro_imovel(df)
-        df = self.set_tarifas(df)
-
-        # arredondar valores
-        df = self.arredondar_valores(df)
-        # turn all into positive values
-        df = self.set_positivo(df)
-        self.set_valor_total_prestacao(df)
-        self.tabela = df.to_dict("records")
-        self.amortizacao = "SAC"
-        self.df = df
-        return df
 
 
 class Amortizacao(ABC):
