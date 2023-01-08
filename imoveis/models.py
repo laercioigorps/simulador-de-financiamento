@@ -2,6 +2,7 @@ from decimal import *
 import datetime
 import pandas as pd
 import numpy_financial as npf
+from abc import ABC, abstractmethod
 
 
 class SimuladorDeFinanciamento:
@@ -95,11 +96,11 @@ class SimuladorDeFinanciamento:
         return df
 
     def set_valor_amortizacao_price(self, df):
-        df["Amortizacao"] = npf.ppmt(
+        amortizacao = npf.ppmt(
             self.juros_mes / 100, df.index, self.prestacoes, self.valor_total
         )
-        df.at[0, "Amortizacao"] = 0
-
+        amortizacao[0] = Decimal("0")
+        df["Amortizacao"] = amortizacao
         return df
 
     def set_valor_amortizacao_sac(self, df):
@@ -205,3 +206,34 @@ class SimuladorDeFinanciamento:
         self.amortizacao = "SAC"
         self.df = df
         return df
+
+
+class Amortizacao(ABC):
+    @abstractmethod
+    def get_valor_amortizacao(self):
+        pass
+
+class AmortizacaoSAC(Amortizacao):
+
+    nome = "SAC"
+
+    def __init__(self, valor_total, prestacoes) -> None:
+        self.valor_total = valor_total
+        self.prestacoes = prestacoes
+
+    def get_valor_amortizacao(self):
+        return -self.valor_total / self.prestacoes
+
+
+class AmortizacaoPRICE(Amortizacao):
+
+    nome = "PRICE"
+
+    def __init__(self, juros_mes, valor_total, prestacoes) -> None:
+        self.juros_mes = juros_mes
+        self.valor_total = valor_total
+        self.prestacoes = prestacoes
+
+    def get_valor_amortizacao(self):
+        index = [i for i in range(1,self.prestacoes+1)]
+        return npf.ppmt(self.juros_mes, index , self.prestacoes, self.valor_total)
